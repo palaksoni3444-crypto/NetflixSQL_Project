@@ -53,27 +53,23 @@ Objective: Determine the distribution of content types on Netflix.
 # 2. Find the Most Common Rating for Movies and TV Shows
 
 ``` sql
-WITH RatingCounts AS (
-    SELECT 
+with cte as 
+(select rating,
+type ,
+count(*) as rating_count
+ from netflix
+ group by rating, type
+ order by  rating_count desc),
+ ranked_data as
+ (select rating,
         type,
-        rating,
-        COUNT(*) AS rating_count
-    FROM netflix
-    GROUP BY type, rating
-),
-RankedRatings AS (
-    SELECT 
-        type,
-        rating,
         rating_count,
-        RANK() OVER (PARTITION BY type ORDER BY rating_count DESC) AS rank
-    FROM RatingCounts
-)
-SELECT 
-    type,
-    rating AS most_frequent_rating
-FROM RankedRatings
-WHERE rank = 1;
+        row_number()over(partition by type order by rating_count desc ) as rnk
+        from cte) 
+ select rating_count,
+        type
+        from ranked_data
+        where rnk=1;
 ```
 Objective: Identify the most frequently occurring rating for each type of content.
 
