@@ -95,11 +95,12 @@ Objective: Identify the top 5 countries with the highest number of content items
 
 # 5. Identify the Longest Movie
 ``` sql
-SELECT 
-    *
-FROM netflix
-WHERE type = 'Movie'
-ORDER BY SPLIT_PART(duration, ' ', 1)::INT DESC;
+    select    title,
+			  duration
+              from netflix
+              where type in('Movie')
+              order by cast(replace(duration,'min','') as unsigned) desc
+              limit 1 ;
 ```
 Objective: Find the movie with the longest duration.
 
