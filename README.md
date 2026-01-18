@@ -112,16 +112,14 @@ select *
 ```
 Objective: Retrieve content added to Netflix in the last 5 years.
 
-# 7. Find All Movies/TV Shows by Director 'Rajiv Chilaka'
+# 7. Number of Movies ,tv show diected by director
 ``` sql
-SELECT *
-FROM (
-    SELECT 
-        *,
-        UNNEST(STRING_TO_ARRAY(director, ',')) AS director_name
-    FROM netflix
-) AS t
-WHERE director_name = 'Rajiv Chilaka';
+   SELECT 
+    COUNT(*) AS total_movies,
+    COALESCE(NULLIF(TRIM(director), ''), 'Misc') AS director
+FROM netflix
+GROUP BY COALESCE(NULLIF(TRIM(director), ''), 'Misc')
+ORDER BY total_movies DESC;
 ```
 Objective: List all content directed by 'Rajiv Chilaka'.
 
